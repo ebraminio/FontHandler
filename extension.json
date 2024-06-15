@@ -1,0 +1,26 @@
+{
+	"name": "Font Handler",
+	"author": "Ebrahim Byagowi",
+	"url": "https://www.mediawiki.org/wiki/Extension:FontHandler",
+	"description": "Handler for viewing font files in image mode",
+	"version": "0.0.1",
+	"license-name": "GPL-2.0-or-later",
+	"type": "media",
+	"MediaHandlers": {
+		"unknown/sfnt": "MediaWiki\\Extension\\FontHandler\\FontHandler",
+		"application/x-font-ttf": "MediaWiki\\Extension\\FontHandler\\FontHandler",
+		"application/x-font-truetype": "MediaWiki\\Extension\\FontHandler\\FontHandler",
+		"application/x-font-opentype": "MediaWiki\\Extension\\FontHandler\\FontHandler"
+	},
+	"requires": {
+		"MediaWiki": ">= 1.42.0"
+	},
+	"FileExtensions": [
+		"ttf",
+		"otf"
+	],
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\FontHandler\\": "includes/"
+	},
+	"manifest_version": 1
+}
