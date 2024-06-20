@@ -39,6 +39,14 @@ class FontHandler extends ImageHandler {
 			) && $value > 0;
 	}
 
+	public function makeParamString( $params ) {
+		return bin2hex( $params[ 'text' ] ?? wfMessage( 'fonthandler-sampletext' ) );
+	}
+
+	public function parseParamString( $str ) {
+		return [ 'text' => pack( 'H*', $str ) ];
+	}
+
 	public function getParamMap() {
 		return [
 			// Text this font will be rendered with
