@@ -95,7 +95,7 @@ class FontHandler extends ImageHandler {
 				// It should be a BCP-47 code
 				'--language=' . ( $params[ 'lang' ] ?? self::FONT_DEFAULT_RENDER_LANG ),
 				// '--dir=' . ( $params[ 'dir' ] ?? 'auto' ) , // ltr/rtl/ttb/btt
-				'--variation=' . ( $params[ 'variations' ] ?? '' ), // e.g. wght=500
+				// '--variation=' . ( $params[ 'variations' ] ?? '' ), // e.g. wght=500
 				// '--features=' . ( $params[ 'features' ] ?? '' ), // e.g. kern
 				$image->getLocalRefPath(),
 				'--unicodes=' . implode( ',', $codes_formatted ),
@@ -127,12 +127,16 @@ class FontHandler extends ImageHandler {
 			->getStdout();
 		$parts = explode( ':', $result );
 		$metadata = [
-			'Full name' => $parts[0],
-			'Width' => $parts[1],
-			'Weight' => $parts[2],
+			'fonthandler-fullname' => $parts[0],
+			'fonthandler-width' => $parts[1],
+			'fonthandler-weight' => $parts[2],
 		];
 
 		return $this->formatMetadataHelper( $metadata, $context );
+	}
+
+	protected function visibleMetadataFields() {
+		return [ 'fonthandler-fullname', 'fonthandler-width', 'fonthandler-weight' ];
 	}
 
 	public function isFileMetadataValid( $file ) {

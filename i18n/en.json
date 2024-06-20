@@ -3,5 +3,8 @@
 		"authors": []
 	},
 	"fonthandler-desc": "Handler for viewing Font files in image mode",
-	"fonthandler-sampletext": "The quick brown fox jumps over the lazy dog"
+	"fonthandler-sampletext": "The quick brown fox jumps over the lazy dog",
+	"fonthandler-fullname": "Full name",
+	"fonthandler-width": "Width",
+	"fonthandler-weight": "Weigth"
 }
