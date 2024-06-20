@@ -2,7 +2,7 @@
 	"name": "Font Handler",
 	"author": "Ebrahim Byagowi",
 	"url": "https://www.mediawiki.org/wiki/Extension:FontHandler",
-	"description": "Handler for viewing font files in image mode",
+	"description": "fonthandler-desc",
 	"version": "0.0.1",
 	"license-name": "GPL-2.0-or-later",
 	"type": "media",
@@ -21,6 +21,21 @@
 	],
 	"AutoloadNamespaces": {
 		"MediaWiki\\Extension\\FontHandler\\": "includes/"
+	},
+	"ExtensionMessagesFiles": {
+		"FontHandlerMagic": "FontHandler.i18n.magic.php"
+	},
+	"MessagesDirs": {
+		"FontHandler": [
+			"i18n"
+		]
+	},
+	"ResourceModules": {
+		"fonthandler.messages": {
+			"messages": [
+				"fonthandler-desc"
+			]
+		}
 	},
 	"manifest_version": 1
 }

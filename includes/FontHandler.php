@@ -31,8 +31,24 @@ class FontHandler extends ImageHandler {
 		return true;
 	}
 
+	public function validateParam( $name, $value ) {
+		return in_array(
+			$name, [ 'lang', 'text', 'dir', 'variations', 'features' ]
+			) && $value > 0;
+	}
+
+	public function getParamMap() {
+		return [
+			'img_lang' => 'lang',
+			'fonthandler_text' => 'text',
+			'fonthandler_dir' => 'dir',
+			'fonthandler_variations' => 'variations',
+			'fonthandler_features' => 'features',
+		];
+	}
+
 	public function getImageSize( $image, $path ): array {
-		return [ 640, 480, 'Svg' ];
+		return [ 640, 240, 'Svg' ];
 	}
 
 	public function getDimensionsString( $file ) {
@@ -51,19 +67,23 @@ class FontHandler extends ImageHandler {
 		MediaWikiServices::getInstance()->getShellCommandFactory()
 			->create()
 			->params(
+				// Using pango's python binding is suggested for the actual implementation
 				'/usr/bin/hb-view', # apt install libharfbuzz-bin
 				'--background=#00000000',
 				'--foreground=#000000',
+				'--language=' . ( $params[ 'lang' ] ?? 'en' ), // It should be BCP-47
+				// '--dir=' . ( $params[ 'dir' ] ?? 'auto' ) , // ltr/rtl/ttb/btt
+				// '--variation=' . ( $params[ 'variations' ] ?? '' ), // e.g. wght=500
+				// '--features=' . ( $params[ 'features' ] ?? '' ), // e.g. kern
 				$image->getLocalRefPath(),
-				'The quick brown fox jumps over the lazy dog',
-				'-o',
-				$dstPath
+				'--text=' . ( $params[ 'text' ] ?? wfMessage( 'fonthandler-sampletext' ) ),
+				'-o', $dstPath
 			)
 			->execute();
 
 		return new ThumbnailImage( $image, $dstUrl, $dstPath, [
 			'width' => 640,
-			'height' => 480,
+			'height' => 240,
 		] );
 	}
 
