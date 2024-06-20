@@ -27,6 +27,8 @@ use ThumbnailImage;
 
 class FontHandler extends ImageHandler {
 
+	private const FONT_DEFAULT_RENDER_LANG = 'en';
+
 	public function canRender( $file ) {
 		return true;
 	}
@@ -52,7 +54,7 @@ class FontHandler extends ImageHandler {
 	}
 
 	public function getDimensionsString( $file ) {
-		return "Scalable";
+		return "Font";
 	}
 
 	public function getThumbType( $ext, $mime, $params = null ) {
@@ -63,23 +65,39 @@ class FontHandler extends ImageHandler {
 		return true;
 	}
 
+	public function isVectorized( $file ) {
+		return true;
+	}
+
 	public function doTransform( $image, $dstPath, $dstUrl, $params, $flags = 0 ) {
-		MediaWikiServices::getInstance()->getShellCommandFactory()
+		$text = $params[ 'text' ] ?? wfMessage( 'fonthandler-sampletext' );
+		$codes = preg_split('//u', $text, -1, PREG_SPLIT_NO_EMPTY);
+		$codes_formatted = array_map(
+			function ($code) {
+				return sprintf("U+%04X", mb_ord( $code ) );
+			},
+			$codes
+		);
+		$result = MediaWikiServices::getInstance()->getShellCommandFactory()
 			->create()
 			->params(
 				// Using pango's python binding is suggested for the actual implementation
 				'/usr/bin/hb-view', # apt install libharfbuzz-bin
 				'--background=#00000000',
 				'--foreground=#000000',
-				'--language=' . ( $params[ 'lang' ] ?? 'en' ), // It should be BCP-47
+				'--font-size=20',
+				// It should be a BCP-47 code
+				'--language=' . ( $params[ 'lang' ] ?? self::FONT_DEFAULT_RENDER_LANG ),
 				// '--dir=' . ( $params[ 'dir' ] ?? 'auto' ) , // ltr/rtl/ttb/btt
 				// '--variation=' . ( $params[ 'variations' ] ?? '' ), // e.g. wght=500
 				// '--features=' . ( $params[ 'features' ] ?? '' ), // e.g. kern
 				$image->getLocalRefPath(),
-				'--text=' . ( $params[ 'text' ] ?? wfMessage( 'fonthandler-sampletext' ) ),
+				'--unicodes=' . implode( ',', $codes_formatted ),
 				'-o', $dstPath
 			)
 			->execute();
+		echo $result->getStdout();
+		echo $result->getStderr();
 
 		return new ThumbnailImage( $image, $dstUrl, $dstPath, [
 			'width' => 640,
