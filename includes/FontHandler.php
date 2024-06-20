@@ -41,11 +41,17 @@ class FontHandler extends ImageHandler {
 
 	public function getParamMap() {
 		return [
-			'img_lang' => 'lang',
+			// Text this font will be rendered with
 			'fonthandler_text' => 'text',
+			// Like SVG, exact same text can be drawn different for differently languages of the same script
+			'img_lang' => 'lang',
+			// Possible values: ltr/rtl/ttb/btt, default is auto detect
 			'fonthandler_dir' => 'dir',
-			'fonthandler_variations' => 'variations',
+			// Similar to font-feature-settings of CSS, fonts can have parameter to tweak the rendering
 			'fonthandler_features' => 'features',
+			// Similar to font-variation-settings of CSS, variable fonts have a mechanism to tweak variable axes
+			// For example a font with variable weight can be turned into Regular, Bold, Thin upon user request
+			'fonthandler_variations' => 'variations',
 		];
 	}
 
@@ -89,7 +95,7 @@ class FontHandler extends ImageHandler {
 				// It should be a BCP-47 code
 				'--language=' . ( $params[ 'lang' ] ?? self::FONT_DEFAULT_RENDER_LANG ),
 				// '--dir=' . ( $params[ 'dir' ] ?? 'auto' ) , // ltr/rtl/ttb/btt
-				// '--variation=' . ( $params[ 'variations' ] ?? '' ), // e.g. wght=500
+				'--variation=' . ( $params[ 'variations' ] ?? '' ), // e.g. wght=500
 				// '--features=' . ( $params[ 'features' ] ?? '' ), // e.g. kern
 				$image->getLocalRefPath(),
 				'--unicodes=' . implode( ',', $codes_formatted ),
